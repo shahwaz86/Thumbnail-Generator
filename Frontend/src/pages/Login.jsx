@@ -1,7 +1,16 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { loginUser } from "../redux/slice/userSlice";
+import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const Login = () => {
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -12,9 +21,20 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log("Login Data:", formData);
+    const {email, password, role} = formData;
+    try{
+      await dispatch(loginUser({email, password, role})).unwrap();
+      navigate("/");
+      toast.success("login successfully");
+
+    }
+    catch(err){
+      console.log(err);
+      // navigate("/login");
+      toast.error(err.message);
+    }
   };
 
   return (
@@ -69,7 +89,7 @@ const Login = () => {
           {/* Button */}
           <button
             type="submit"
-            className="w-full py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-semibold transition"
+            className="w-full py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-semibold transition cursor-pointer"
           >
             Login
           </button>

@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { registerUser } from "../redux/slice/userSlice";
 
 const Signup = () => {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -13,9 +21,19 @@ const Signup = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log("Signup Data:", formData);
+
+    const {name, email, password, role} = formData;
+
+    try{
+      await dispatch(registerUser({name, email, password, role})).unwrap();
+      navigate("/");
+      toast.success("signup successfully");
+    }
+    catch(err){
+    toast.error(err);
+    }
   };
 
   return (
@@ -83,7 +101,7 @@ const Signup = () => {
           {/* Button */}
           <button
             type="submit"
-            className="w-full py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-semibold transition"
+            className="w-full py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-semibold transition cursor-pointer"
           >
             Sign Up
           </button>

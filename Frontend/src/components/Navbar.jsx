@@ -26,7 +26,7 @@ const Navbar = () => {
             Generate
           </Link>
           <Link to="/pricing" className="hover:text-purple-400 transition">
-            Pricing
+            MyGeneration
           </Link>
         </div>
 
@@ -39,7 +39,7 @@ const Navbar = () => {
             Login
           </Link>
           <Link
-            to="/register"
+            to="/signup"
             className="px-5 py-2 rounded-full bg-purple-600 hover:bg-purple-700 text-white transition"
           >
             Sign Up

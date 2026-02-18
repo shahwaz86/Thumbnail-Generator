@@ -1,39 +1,26 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-const thumbnailSchema = mongoose.Schema({
+const thumbnailSchema = new mongoose.Schema(
+  {
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     prompt: {
-        type: String,
-        required: true,
-      
-
+      type: String,
+      required: true,
     },
-
     style: {
-        type: String,
-        default: "YOUTUBE",
-
+      type: String,
+      default: "YouTube",
     },
-
     imageUrl: {
-        type: String,
-        required: true,
-
+      type: String,
+      required: true,
     },
-    aiModel: {
-        type: String,
-        default: "chatgpt"
-    }
-
-
-}, { timestamps: true }
+  },
+  { timestamps: true }
 );
 
-const Thumbnail = mongoose.model("Thumbnail", thumbnailSchema);
-
-module.exports = Thumbnail;
+export default mongoose.model("Thumbnail", thumbnailSchema);

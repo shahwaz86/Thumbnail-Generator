@@ -31,9 +31,9 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   res.status(201).json({
-    _id: user._id,
-    name: user.name,
-    email: user.email,
+    id: user._id,
+    name,
+    email,
     token,
     role,
     message: "User registered successfully",
@@ -44,7 +44,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 // Login user
 const loginUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password , role} = req.body;
   const existsUser = await User.findOne({ email });
   if(!existsUser){
     res.status(400);
@@ -55,6 +55,11 @@ const loginUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Invalid credentials");
   };
+  if (existsUser.role !== role) {
+  res.status(403);
+  throw new Error("Role mismatch");
+}
+
   const token = generateToken(existsUser._id);
 
   res.cookie("token", token, {  
@@ -66,6 +71,7 @@ const loginUser = asyncHandler(async (req, res) => {
     _id: existsUser._id,
     name: existsUser.name,
     email: existsUser.email,
+    role: existsUser.role,
     token,
     
     message: "Login successful",
@@ -75,7 +81,11 @@ const loginUser = asyncHandler(async (req, res) => {
 // logout user
 const logoutUser = asyncHandler( (req, res) => {
   try{
-    res.clearCookie("token", "");
+    res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
   res.status(200).json({ message: "Logout successful" });
   }
   catch(error){

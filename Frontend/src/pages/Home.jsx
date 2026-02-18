@@ -18,18 +18,13 @@ const Home = () => {
 
         <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            to="/signup"
-            className="px-8 py-3 rounded-full bg-purple-600 hover:bg-purple-700 transition font-semibold"
-          >
-            Get Started Free
-          </Link>
-
-          <Link
             to="/generate"
-            className="px-8 py-3 rounded-full border border-white/20 hover:bg-white/10 transition"
+            className="px-8 py-3 rounded-full bg-purple-600 hover:bg-purple-700 transition font-semibold"
           >
             Generate Now
           </Link>
+
+          
         </div>
       </section>
 
