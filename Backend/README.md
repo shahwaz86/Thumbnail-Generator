@@ -79,6 +79,24 @@ Base path used in the server: `/api/user`
   - What it does: clears cookie named `token` using `res.clearCookie("token", "")` and returns a success message
   - Success response: `200` with `{ message: "Logout successful" }`
 
+
+### Thumbnail generation
+
+The backend exposes a protected route for creating AI-generated thumbnails using OpenAI's image API.
+
+- **Endpoint**: `/api/thumbnail/generate`
+- **Method**: `POST`
+- **Headers**: must include a valid JWT in the `Authorization: Bearer <token>` header or via the
+  `token` cookie; the `isAuthenticated` middleware ensures the request is from a logged-in user.
+- **Body (JSON)**: `{ prompt, style }` where `prompt` is required and `style` may be a string
+  (e.g. "YouTube").
+- **Behaviour**: builds a detailed prompt for OpenAI's `gpt-image-1` model, requests a 1024×1024
+  image, then stores the resulting URL in the `thumbnails` collection along with the user ID.
+- **Environment**: requires `OPENAI_API_KEY` in addition to the usual variables mentioned above.
+- **Success response**: `200` with `{ image }` containing the URL of the generated thumbnail.
+
+(See `controllers/thumbnail.controller.js` and `routes/thumbnail.routes.js`.)
+
 Notes:
 - All controller logic is in [controllers/user.controller.js](controllers/user.controller.js).
 - Errors are thrown with appropriate HTTP status codes using `express-async-handler`.

@@ -8,7 +8,7 @@ export const serverUrl="http://localhost:8080";
 import { ToastContainer } from 'react-toastify';
 import { useSelector } from "react-redux";
 import PrivateNavbar from "./components/PrivateNavbar";
-import protectedRoute from "./utils/ProtectedRoute";
+import ProtectedRoute from "./utils/ProtectedRoute";
 
 function App() {
   const isAuth = useSelector((state) => state.user.userData);
@@ -21,7 +21,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/generate" element={<protectedRoute><Generate/></protectedRoute> }/>
+        <Route path="/generate" element={<ProtectedRoute><Generate/></ProtectedRoute> }/>
+        {/* <Route path="/generate" element={<Generate/> }/> */}
 
         
     </Routes>

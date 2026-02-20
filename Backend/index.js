@@ -5,8 +5,9 @@ dotenv.config();
 const PORT = process.env.PORT;
 const cors = require("cors");
 const connectDB = require("./config/db");
-const userRouter = require("./routes/user.routes");
 const cookieParser = require("cookie-parser");
+const userRouter = require("./routes/user.routes");
+const thumbnailRouter = require("./routes/thumbnail.routes");
 
 connectDB();
 
@@ -24,6 +25,7 @@ app.use(cors({
 
 
 app.use("/api/user", userRouter);
+app.use("/api/thumbnail", thumbnailRouter);
 
 
 app.listen(PORT, () =>{

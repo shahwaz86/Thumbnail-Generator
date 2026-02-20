@@ -2,36 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 
 const Generate = () => {
-  const [prompt, setPrompt] = useState("");
-  const [style, setStyle] = useState("YouTube");
-  const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const handleGenerate = async () => {
-    if (!prompt) return;
-
-    try {
-      setLoading(true);
-      setError("");
-
-      const res = await axios.post(
-        "http://localhost:5000/api/generate",
-        { prompt, style },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-
-      setImage(res.data.image);
-    } catch (err) {
-      setError("Failed to generate thumbnail. Try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+ 
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white px-6 pt-28">
@@ -49,8 +20,7 @@ const Generate = () => {
             <label className="text-gray-300 text-sm">Prompt</label>
             <textarea
               rows="4"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
+              
               placeholder="YouTube thumbnail for travel vlog in Paris..."
               className="w-full mt-2 px-4 py-3 rounded-lg bg-black/40 border border-white/10 focus:border-purple-500 focus:outline-none text-white"
             />
@@ -60,8 +30,7 @@ const Generate = () => {
           <div className="mb-6">
             <label className="text-gray-300 text-sm">Style</label>
             <select
-              value={style}
-              onChange={(e) => setStyle(e.target.value)}
+              
               className="w-full mt-2 px-4 py-2 rounded-lg bg-black/40 border border-white/10 focus:border-purple-500 focus:outline-none"
             >
               <option>YouTube</option>
@@ -73,7 +42,7 @@ const Generate = () => {
 
           {/* Button */}
           <button
-            onClick={handleGenerate}
+            
             disabled={loading}
             className="w-full py-3 rounded-lg bg-purple-600 hover:bg-purple-700 transition font-semibold disabled:opacity-50"
           >
