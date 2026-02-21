@@ -1,4 +1,5 @@
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const thumbnailSchema = new mongoose.Schema(
   {
@@ -23,4 +24,4 @@ const thumbnailSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Thumbnail", thumbnailSchema);
+module.exports =  mongoose.model("Thumbnail", thumbnailSchema);

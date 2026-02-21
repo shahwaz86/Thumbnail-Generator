@@ -1,14 +1,11 @@
-// import OpenAI from "openai";
-// import Thumbnail from "../models/Thumbnail.js";
-
-const OpenAI = require("openai");
+const axios = require("axios");
+const FormData = require("form-data");
+const cloudinary = require("../utils/cloudinary");
 const Thumbnail = require("../models/thumbnail");
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const CLIPDROP_URL = "https://clipdrop-api.co/text-to-image/v1";
 
-export const generateThumbnail = async (req, res) => {
+const generateThumbnail = async (req, res) => {
   try {
     const { prompt, style } = req.body;
 
@@ -16,35 +13,73 @@ export const generateThumbnail = async (req, res) => {
       return res.status(400).json({ message: "Prompt is required" });
     }
 
+    // 🎯 Prompt optimized for thumbnails
     const finalPrompt = `
-      Create a high-quality ${style} thumbnail.
-      Topic: ${prompt}
-      Bright colors, bold text, cinematic lighting,
-      high contrast, professional YouTube-style design,
+      ${style} YouTube thumbnail.
+      ${prompt}.
+      Bright colors, bold text,
+      high contrast, cinematic lighting,
+      professional, eye-catching,
       16:9 aspect ratio.
     `;
 
-    const imageResponse = await openai.images.generate({
-      model: "gpt-image-1",
-      prompt: finalPrompt,
-      size: "1024x1024",
+    // 🔥 Build form-data (Clipdrop requirement)
+    const formData = new FormData();
+    formData.append("prompt", finalPrompt);
+
+    // 🔥 Call Clipdrop API
+    const clipdropResponse = await axios.post(
+      CLIPDROP_URL,
+      formData,
+      {
+        headers: {
+          "x-api-key": process.env.CLIPDROP_API_KEY,
+          ...formData.getHeaders(),
+        },
+        responseType: "arraybuffer", // IMPORTANT
+      }
+    );
+
+    // ✅ Convert response → Buffer
+    const imageBuffer = Buffer.from(clipdropResponse.data);
+
+    // ✅ Upload to Cloudinary (stream – safest)
+    const uploadResult = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: "ai-thumbnails",
+          resource_type: "image",
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+
+      stream.end(imageBuffer);
     });
 
-    const imageUrl = imageResponse.data[0].url;
-
-    // Save to MongoDB
+    // ✅ Save in MongoDB
     const thumbnail = await Thumbnail.create({
-      user: req.user.id,
+      user: req.user._id,
       prompt,
       style,
-      imageUrl,
+      imageUrl: uploadResult.secure_url,
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       image: thumbnail.imageUrl,
     });
   } catch (error) {
-    console.error("Thumbnail generation error:", error);
-    res.status(500).json({ message: "Thumbnail generation failed" });
+    console.error(
+      "Clipdrop thumbnail generation failed:",
+      error.response?.data || error.message
+    );
+
+    return res.status(500).json({
+      message: "Thumbnail generation failed",
+    });
   }
 };
+
+module.exports = { generateThumbnail };

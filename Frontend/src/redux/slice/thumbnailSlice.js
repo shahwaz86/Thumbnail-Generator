@@ -3,3 +3,51 @@ import axios from "axios";
 import {serverUrl} from "../../App";
 
 
+const initialState = {
+    image: null,
+    loading: null,
+    error: null
+};
+
+export const generateThumbnail = createAsyncThunk("thumbnail/generate", async({prompt, style}, {rejectWithValue}) =>{
+    try{
+        const {data} = await axios.post(`${serverUrl}/api/thumbnail/generate`, {prompt, style}, {withCredentials: true});
+        return data.image;
+    }
+    catch(err){
+        return rejectWithValue(err?.response?.data?.message);
+    }
+});
+
+const thumbnailSlice = createSlice({
+    name: "thumbnail",
+    initialState,
+    reducers:{
+        resetThumbnail: (state)=>{
+            state.image = null,
+            state.error = null
+        }
+    },
+    extraReducers: (builder)=>{
+        builder.addCase(generateThumbnail.pending, (state,action) =>{
+            state.loading = true;
+            state.error = null;
+        });
+
+        builder.addCase(generateThumbnail.fulfilled, (state,action) =>{
+            state.loading = false;
+            state.image = action.payload
+        });
+        builder.addCase(generateThumbnail.rejected, (state,action) =>{
+            state.loading = false;
+            state.error = action.payload;
+            
+        })
+
+    }
+
+});
+
+
+export const {resetThumbnail} = thumbnailSlice.actions;
+export default thumbnailSlice.reducer;

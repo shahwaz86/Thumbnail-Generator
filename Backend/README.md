@@ -82,7 +82,8 @@ Base path used in the server: `/api/user`
 
 ### Thumbnail generation
 
-The backend exposes a protected route for creating AI-generated thumbnails using OpenAI's image API.
+The backend exposes a protected route for creating AI-generated thumbnails using the Clipdrop
+text-to-image API.  A user must be authenticated to call this route.
 
 - **Endpoint**: `/api/thumbnail/generate`
 - **Method**: `POST`
@@ -90,9 +91,12 @@ The backend exposes a protected route for creating AI-generated thumbnails using
   `token` cookie; the `isAuthenticated` middleware ensures the request is from a logged-in user.
 - **Body (JSON)**: `{ prompt, style }` where `prompt` is required and `style` may be a string
   (e.g. "YouTube").
-- **Behaviour**: builds a detailed prompt for OpenAI's `gpt-image-1` model, requests a 1024×1024
-  image, then stores the resulting URL in the `thumbnails` collection along with the user ID.
-- **Environment**: requires `OPENAI_API_KEY` in addition to the usual variables mentioned above.
+- **Behaviour**: the controller builds a thumbnail‑optimized prompt combining `style` and `prompt` and
+  sends it to Clipdrop (`https://clipdrop-api.co/text-to-image/v1`).  The raw image buffer
+  returned by Clipdrop is uploaded to Cloudinary, and the resulting secure URL is saved in the
+  `thumbnails` collection along with the user ID.
+- **Environment**: requires `CLIPDROP_API_KEY` (for the Clipdrop request) in addition to the
+  usual variables such as `MONGO_URI`, `SECRETKEY`, and Cloudinary credentials.
 - **Success response**: `200` with `{ image }` containing the URL of the generated thumbnail.
 
 (See `controllers/thumbnail.controller.js` and `routes/thumbnail.routes.js`.)

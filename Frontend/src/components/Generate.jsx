@@ -1,8 +1,20 @@
 import { useState } from "react";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { generateThumbnail } from "../redux/slice/thumbnailSlice";
+
 
 const Generate = () => {
  
+  const dispatch = useDispatch();
+
+  const {image, error, loading} = useSelector((state) => state.thumbnail);  
+
+  const [prompt, setPrompt] = useState("");
+  const [style, setStyle] = useState("YouTube");
+
+  const handleGenerate = () => {
+    dispatch(generateThumbnail({ prompt, style }));
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white px-6 pt-28">
@@ -35,14 +47,13 @@ const Generate = () => {
             >
               <option>YouTube</option>
               <option>Instagram</option>
-              <option>Podcast</option>
-              <option>Advertisement</option>
+              
             </select>
           </div>
 
           {/* Button */}
           <button
-            
+            onClick={handleGenerate}
             disabled={loading}
             className="w-full py-3 rounded-lg bg-purple-600 hover:bg-purple-700 transition font-semibold disabled:opacity-50"
           >
