@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(cors({
-  origin: "https://thumbnail-generator-eta.vercel.app",
+  origin: "https://thumbnail-generator-kappa.vercel.app",
   credentials: true,
 }));
 
