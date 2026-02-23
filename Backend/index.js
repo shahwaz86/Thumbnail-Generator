@@ -22,7 +22,9 @@ app.use(cors({
 }
 ));
 
-
+app.get("/", (req,res) =>{
+    res.send("API is running");
+});
 
 app.use("/api/user", userRouter);
 app.use("/api/thumbnail", thumbnailRouter);
