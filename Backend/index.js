@@ -27,4 +27,12 @@ app.get("/", (req, res) => {
 app.use("/api/user", userRouter);
 app.use("/api/thumbnail", thumbnailRouter);
 
+
+app.use((err, req, res, next) => {
+  console.error("SERVER ERROR:", err.message);
+  res.status(res.statusCode || 500).json({
+    message: err.message || "Internal Server Error",
+  });
+});
+
 module.exports = app;
