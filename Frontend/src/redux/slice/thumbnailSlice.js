@@ -5,6 +5,7 @@ import {serverUrl} from "../../App";
 
 const initialState = {
     image: null,
+    history: [],
     loading: null,
     error: null
 };
@@ -18,6 +19,23 @@ export const generateThumbnail = createAsyncThunk("thumbnail/generate", async({p
         return rejectWithValue(err?.response?.data?.message);
     }
 });
+
+// Fetch history
+export const fetchThumbnailHistory = createAsyncThunk(
+  "thumbnail/history",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(
+        `${serverUrl}/api/thumbnail/history`,
+        { withCredentials: true }
+      );
+      return data;
+    } catch (err) {
+      return rejectWithValue(err?.response?.data?.message);
+    }
+  }
+);
+
 
 const thumbnailSlice = createSlice({
     name: "thumbnail",
@@ -42,7 +60,19 @@ const thumbnailSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
             
-        })
+        });
+
+        builder.addCase(fetchThumbnailHistory.pending, (state) => {
+        state.loading = true;
+      })
+      builder.addCase(fetchThumbnailHistory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.history = action.payload;
+      })
+      builder.addCase(fetchThumbnailHistory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
 
     }
 

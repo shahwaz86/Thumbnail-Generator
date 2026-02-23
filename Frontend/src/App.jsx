@@ -9,6 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import { useSelector } from "react-redux";
 import PrivateNavbar from "./components/PrivateNavbar";
 import ProtectedRoute from "./utils/ProtectedRoute";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   const isAuth = useSelector((state) => state.user.userData);
@@ -22,7 +23,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/generate" element={<ProtectedRoute><Generate/></ProtectedRoute> }/>
-        {/* <Route path="/generate" element={<Generate/> }/> */}
+        <Route path="/dashboard" element={<Dashboard />} />
 
         
     </Routes>

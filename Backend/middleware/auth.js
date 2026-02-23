@@ -4,7 +4,7 @@ const User = require("../models/user");
 
 const isAuth = asyncHandler(async(req,res,next)=>{
     const token = req?.cookies?.token || req?.headers?.authorization?.split(" ")[1];
-    console.log("Token from middleware:", token);   
+    // console.log("Token from middleware:", token);   
 
     if(!token){
         res.status(401);

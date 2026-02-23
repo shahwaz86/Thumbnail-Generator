@@ -15,7 +15,7 @@ const generateThumbnail = async (req, res) => {
 
     // 🎯 Prompt optimized for thumbnails
     const finalPrompt = `
-      ${style} YouTube thumbnail.
+      
       ${prompt}.
       Bright colors, bold text,
       high contrast, cinematic lighting,
@@ -82,4 +82,18 @@ const generateThumbnail = async (req, res) => {
   }
 };
 
-module.exports = { generateThumbnail };
+
+// GET thumbnail history for logged-in user
+const getThumbnailHistory = async (req, res) => {
+  try {
+    const thumbnails = await Thumbnail.find({ user: req.user._id })
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(thumbnails);
+  } catch (error) {
+    console.error("Fetch history error:", error);
+    res.status(500).json({ message: "Failed to fetch thumbnail history" });
+  }
+};
+
+module.exports = { generateThumbnail, getThumbnailHistory };

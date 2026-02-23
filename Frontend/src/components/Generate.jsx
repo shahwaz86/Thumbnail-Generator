@@ -2,17 +2,15 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { generateThumbnail } from "../redux/slice/thumbnailSlice";
 
-
 const Generate = () => {
- 
   const dispatch = useDispatch();
-
-  const {image, error, loading} = useSelector((state) => state.thumbnail);  
+  const { image, error, loading } = useSelector((state) => state.thumbnail);
 
   const [prompt, setPrompt] = useState("");
   const [style, setStyle] = useState("YouTube");
 
   const handleGenerate = () => {
+    if (!prompt.trim()) return;
     dispatch(generateThumbnail({ prompt, style }));
   };
 
@@ -22,7 +20,6 @@ const Generate = () => {
 
         {/* LEFT PANEL */}
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-
           <h2 className="text-3xl font-bold mb-6">
             Generate Thumbnail ✨
           </h2>
@@ -32,8 +29,9 @@ const Generate = () => {
             <label className="text-gray-300 text-sm">Prompt</label>
             <textarea
               rows="4"
-              
-              placeholder="YouTube thumbnail for travel vlog in Paris..."
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder="Gaming thumbnail neon cyberpunk..."
               className="w-full mt-2 px-4 py-3 rounded-lg bg-black/40 border border-white/10 focus:border-purple-500 focus:outline-none text-white"
             />
           </div>
@@ -42,12 +40,12 @@ const Generate = () => {
           <div className="mb-6">
             <label className="text-gray-300 text-sm">Style</label>
             <select
-              
+              value={style}
+              onChange={(e) => setStyle(e.target.value)}
               className="w-full mt-2 px-4 py-2 rounded-lg bg-black/40 border border-white/10 focus:border-purple-500 focus:outline-none"
             >
-              <option>YouTube</option>
-              <option>Instagram</option>
-              
+              <option value="YouTube">YouTube</option>
+              <option value="Instagram">Instagram</option>
             </select>
           </div>
 
@@ -67,14 +65,11 @@ const Generate = () => {
 
         {/* RIGHT PANEL */}
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 flex items-center justify-center">
-
-          {!image && (
+          {!image ? (
             <p className="text-gray-400 text-center">
               Your generated thumbnail will appear here
             </p>
-          )}
-
-          {image && (
+          ) : (
             <div className="w-full">
               <img
                 src={image}
