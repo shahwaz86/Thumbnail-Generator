@@ -26,9 +26,11 @@ const registerUser = asyncHandler(async (req, res) => {
   const token = generateToken(user._id);
   
   res.cookie("token", token, {
-    httpOnly: true,
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  });
+  httpOnly: true,
+  secure: true,          
+  sameSite: "none",      
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+});
 
   res.status(201).json({
     id: user._id,
@@ -62,11 +64,12 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const token = generateToken(existsUser._id);
 
-  res.cookie("token", token, {  
-    httpOnly: true,
-   
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  });
+ res.cookie("token", token, {
+  httpOnly: true,
+  secure: true,          
+  sameSite: "none",      
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+});
   res.status(200).json({
     _id: existsUser._id,
     name: existsUser.name,
@@ -82,10 +85,10 @@ const loginUser = asyncHandler(async (req, res) => {
 const logoutUser = asyncHandler( (req, res) => {
   try{
     res.clearCookie("token", {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-  });
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+});
   res.status(200).json({ message: "Logout successful" });
   }
   catch(error){
