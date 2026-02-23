@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 app.use(cors({
-  origin: ["http://localhost:5173", "https://thumbnail-generator-eta.vercel.app"], // Adjust the origin as needed
+  origin: ["http://localhost:5173", "https://thumbnail-generator-kappa.vercel.app"], // Adjust the origin as needed
   credentials: true,
   
 }
