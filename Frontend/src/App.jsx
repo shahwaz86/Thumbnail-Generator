@@ -4,7 +4,6 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 import Generate from "./components/Generate";
-export const serverUrl="http://localhost:8080";
 import { ToastContainer } from 'react-toastify';
 import { useSelector } from "react-redux";
 import PrivateNavbar from "./components/PrivateNavbar";
