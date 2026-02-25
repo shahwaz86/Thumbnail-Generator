@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 
 const Login = () => {
+  const loading = useSelector((state) => state.user.loading);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -88,10 +89,11 @@ const Login = () => {
 
           {/* Button */}
           <button
+          disabled={loading}
             type="submit"
             className="w-full py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-semibold transition cursor-pointer"
           >
-            Login
+            {loading ? "logging in..." : "Login"}
           </button>
         </form>
 

@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { registerUser } from "../redux/slice/userSlice";
 
 const Signup = () => {
+  const loading = useSelector((state) => state.user.loading);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -100,10 +101,11 @@ const Signup = () => {
 
           {/* Button */}
           <button
+          disabled={loading}
             type="submit"
             className="w-full py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-semibold transition cursor-pointer"
           >
-            Sign Up
+            {loading ? "Signing Up..." : "Sign Up"}
           </button>
         </form>
 
